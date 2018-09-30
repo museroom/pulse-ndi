@@ -32,6 +32,7 @@
 // ----------------------
 void ofApp::findNdi() {
 	
+	if(bNdiFound) return;
 
 	// Create a finder
 	pNDI_find = NDIlib_find_create_v2();
@@ -40,14 +41,14 @@ void ofApp::findNdi() {
 	// Wait until there is one source
 	uint32_t no_sources = 0;
 	const NDIlib_source_t* p_sources = NULL;
-	while (!no_sources)
-	{	// Wait until the sources on the nwtork have changed
+	//while (!no_sources) {	// Wait until the sources on the nwtork have changed
 		printf("Looking for sources ...\n");
 		NDIlib_find_wait_for_sources(pNDI_find, 1000/* One second */);
 		p_sources = NDIlib_find_get_current_sources(pNDI_find, &no_sources);
-	}
+	// }
 	
-	
+	if( !no_sources ) return;
+
 	bNdiFound = true;
 
 	// We now have at least one source, so we create a receiver to look at it.
@@ -116,15 +117,16 @@ void ofApp::draw() {
 
 	char str[256];
 	ofSetColor(255);
-
+	findNdi();
 	// ====== SPOUT =====
 	// A render window must be available for Spout initialization and might not be
 	// available in "update" so do it now when there is definitely a render window.
+	if(!bInitialized) {
+		// Create the sender
+		bInitialized = spoutsender->CreateSender(sendername, ofGetWidth(), ofGetHeight()); 
+	}
 	if(bNdiFound) {
-		if(!bInitialized) {
-			// Create the sender
-			bInitialized = spoutsender->CreateSender(sendername, ofGetWidth(), ofGetHeight()); 
-		}
+
 		// ===================
 		NDIlib_video_frame_v2_t video_frame;
 		NDIlib_audio_frame_v2_t audio_frame;
@@ -172,29 +174,29 @@ void ofApp::draw() {
 	rotY+=0.5;*/
 
 	// ====== SPOUT =====
-	if(bInitialized) {
+	//if(bInitialized) {
 
-        if(ofGetWidth() > 0 && ofGetHeight() > 0) { // protect against user minimize
+    if(ofGetWidth() > 0 && ofGetHeight() > 0) { // protect against user minimize
 
-            // Grab the screen into the local spout texture
-            glBindTexture(GL_TEXTURE_2D, sendertexture);
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, ofGetWidth(), ofGetHeight());
-            glBindTexture(GL_TEXTURE_2D, 0);
+        // Grab the screen into the local spout texture
+        glBindTexture(GL_TEXTURE_2D, sendertexture);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, ofGetWidth(), ofGetHeight());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-            // Send the texture out for all receivers to use
-            spoutsender->SendTexture(sendertexture, GL_TEXTURE_2D, ofGetWidth(), ofGetHeight());
+        // Send the texture out for all receivers to use
+        spoutsender->SendTexture(sendertexture, GL_TEXTURE_2D, ofGetWidth(), ofGetHeight());
 
-            // Show what it is sending
-            ofSetColor(255);
-            sprintf(str, "Sending as : [%s]", sendername);
-            //ofDrawBitmapString(str, 20, 20);
+        // Show what it is sending
+        ofSetColor(255);
+        sprintf(str, "Sending as : [%s]", sendername);
+        //ofDrawBitmapString(str, 20, 20);
 
-            // Show fps
-            sprintf(str, "fps: %3.3d", (int)ofGetFrameRate());
-            //ofDrawBitmapString(str, ofGetWidth()-120, 20);
+        // Show fps
+        sprintf(str, "fps: %3.3d", (int)ofGetFrameRate());
+        //ofDrawBitmapString(str, ofGetWidth()-120, 20);
 
-        }
-	}
+    }
+	//}
     // ===================
 
 

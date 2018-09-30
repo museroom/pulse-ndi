@@ -1,5 +1,7 @@
 Debug/
 Release/
 bin/
-*.opensdf
+*opensdf
 ipch/
+*sdf
+*suo
