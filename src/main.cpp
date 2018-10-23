@@ -1,5 +1,8 @@
+#define TARGET_NODISPLAY
+
 #include "ofMain.h"
 #include "ofApp.h"
+#include "ofAppNoWindow.h"
 
 #include <cstdio>
 #include <chrono>
@@ -56,24 +59,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 )*/
 //int main() 
 {
-	int i;
-	for( i = 0; i< 2; i++ ) {
-		i = i + 1;
-	}
-
 	if (!NDIlib_initialize()) return 0;
+	
+	ofAppNoWindow window;
+	//ofSetupOpenGL( &window, 512, 512, OF_WINDOW );
 	
 
 	ofSetupOpenGL(512, 512, OF_WINDOW); // <-------- setup the GL context
+	
+	ofSetWindowPosition(-512,0);
+	ShowWindow( ofGetWin32Window(), SW_HIDE );
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
 	// pass in width and height too:
 	ofApp *app = new ofApp();
 	app->n_source = 0;
-	/*if( strlen( lpCmdLine ) > 0 ) {
+	if( strlen( lpCmdLine ) > 0 ) {
 		app->n_source = (int)lpCmdLine[0] - 65;
-		ShowWindow( ofGetWin32Window(), SW_HIDE );
-	}*/
+	}
 	ofRunApp( app );
 
 	return 0;

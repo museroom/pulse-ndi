@@ -34,17 +34,16 @@ void ofApp::findNdi() {
 	
 	if(bNdiFound) return;
 
-	// Create a finder
-	pNDI_find = NDIlib_find_create_v2();
+
 	//if (!pNDI_find) return 0;
 
 	// Wait until there is one source
 	uint32_t no_sources = 0;
 	const NDIlib_source_t* p_sources = NULL;
 	//while (!no_sources) {	// Wait until the sources on the nwtork have changed
-		printf("Looking for sources ...\n");
-		NDIlib_find_wait_for_sources(pNDI_find, 1000/* One second */);
-		p_sources = NDIlib_find_get_current_sources(pNDI_find, &no_sources);
+	printf("Looking for sources ...\n");
+	NDIlib_find_wait_for_sources(pNDI_find, 5000/* One second */);
+	p_sources = NDIlib_find_get_current_sources(pNDI_find, &no_sources);
 	// }
 	
 	if( !no_sources ) return;
@@ -74,12 +73,14 @@ void ofApp::setup(){
 	
 	// === NDI
 	bNdiFound = false;
-	
+
+	// Create a finder
+	pNDI_find = NDIlib_find_create_v2();
 	findNdi();
 
 	// === Open Framework init
 
-	ofBackground(0, 0, 255);
+	ofBackground(0, 0, 0);
 	ofEnableNormalizedTexCoords();  // explicitly normalize tex coords for ofBox
 
     // ====== SPOUT =====
@@ -104,6 +105,9 @@ void ofApp::setup(){
 	rotX = 0;
 	rotY = 0;
 
+	// Spout Test Mode
+	testmode_counter = 0;
+
 } // end setup
 
 
@@ -116,8 +120,11 @@ void ofApp::update() {
 void ofApp::draw() {
 
 	char str[256];
-	ofSetColor(255);
+	bool bNdiTimeout;
+
+	
 	findNdi();
+
 	// ====== SPOUT =====
 	// A render window must be available for Spout initialization and might not be
 	// available in "update" so do it now when there is definitely a render window.
@@ -125,12 +132,13 @@ void ofApp::draw() {
 		// Create the sender
 		bInitialized = spoutsender->CreateSender(sendername, ofGetWidth(), ofGetHeight()); 
 	}
+	
+	testmode_counter++;
 	if(bNdiFound) {
 
 		// ===================
-		NDIlib_video_frame_v2_t video_frame;
-		NDIlib_audio_frame_v2_t audio_frame;
 
+		//bNdiFound = false;
 		switch (NDIlib_recv_capture_v2(pNDI_recv, &video_frame, &audio_frame, nullptr, 5000))
 		{	// No data
 		case NDIlib_frame_type_none:
@@ -146,12 +154,18 @@ void ofApp::draw() {
 			//ofDrawBitmapString(str, 20, 50);
 			myTextureImage.setFromPixels( video_frame.p_data, 512, 512, OF_IMAGE_COLOR_ALPHA, false );
 			NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
+			
+			//bNdiFound = true;
+			testmode_counter = 0;
 			break;
 
 		// Audio data
 		case NDIlib_frame_type_audio:
 			//printf("Audio data received (%d samples).\n", audio_frame.no_samples);
 			NDIlib_recv_free_audio_v2(pNDI_recv, &audio_frame);
+		
+			//bNdiFound = true;
+			testmode_counter = 0;
 			break;
 		}
 	}
@@ -163,11 +177,24 @@ void ofApp::draw() {
 	ofRotateY(rotX); // rotate - must be float
 	ofRotateX(rotY);*/
 	
-	if( bNdiFound ) {
-		myTextureImage.getTextureReference().bind(); // bind our texture
-		//ofDrawBox(0.4*(float)ofGetHeight()); // Draw the graphic
-		ofDrawPlane(256,256,512,512);
-		myTextureImage.getTextureReference().unbind(); // bind our texture
+	if( testmode_counter > 0 ) {
+		int testmode_index = testmode_counter % 3;
+		float testmode_level = 0.7;
+		int testmode_color[4][3] = {{0,0,255},{0,255,0},{255,0,0},{255,255,255}};
+		ofBackground( 
+			int(testmode_color[testmode_index][0] * testmode_level),
+			int(testmode_color[testmode_index][1] * testmode_level),
+			int(testmode_color[testmode_index][2] * testmode_level)
+		);
+	}
+	else {	
+		ofBackground(0, 0, 0);
+		if( bNdiFound ) {
+			myTextureImage.getTextureReference().bind(); // bind our texture
+			//ofDrawBox(0.4*(float)ofGetHeight()); // Draw the graphic
+			ofDrawPlane(256,256,512,512);
+			myTextureImage.getTextureReference().unbind(); // bind our texture
+		}
 	}
 	/*ofPopMatrix();
 	rotX+=0.5;
@@ -187,7 +214,7 @@ void ofApp::draw() {
         spoutsender->SendTexture(sendertexture, GL_TEXTURE_2D, ofGetWidth(), ofGetHeight());
 
         // Show what it is sending
-        ofSetColor(255);
+        //ofSetColor(255);
         sprintf(str, "Sending as : [%s]", sendername);
         //ofDrawBitmapString(str, 20, 20);
 

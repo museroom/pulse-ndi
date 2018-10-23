@@ -22,12 +22,14 @@
 */
 #pragma once
 
+#define TARGET_NODISPLAY
+
 #include "ofMain.h"
 #include "resource.h" // for custom icon
 #include "Spout.h" // Spout SDK
 #include <Processing.NDI.Lib.h> // NDI sdk
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 	public:
 		void setup();
 		void update();
@@ -44,6 +46,10 @@ class ofApp : public ofBaseApp{
 		ofImage myTextureImage;   // Texture image for the 3D demo
 		NDIlib_source_t my_source;
 		int n_source;			  // Sources from NDI (A B C D)
+		int testmode_counter;
+
+		NDIlib_video_frame_v2_t video_frame;
+		NDIlib_audio_frame_v2_t audio_frame;
 
 		float rotX, rotY;
 		bool InitGLtexture(GLuint &texID, unsigned int width, unsigned int height);
