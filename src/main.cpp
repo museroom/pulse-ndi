@@ -4,8 +4,11 @@
 #include "ofApp.h"
 #include "ofAppNoWindow.h"
 
+
 #include <cstdio>
+#include <wchar.h>
 #include <chrono>
+#include <iostream>
 #include <Processing.NDI.Lib.h>
 
 #ifdef _WIN32
@@ -44,6 +47,52 @@
 // Click APPLY and OK. Then make changes to Main as below
 //--------------------------------------------------------------
 
+char **argv = NULL;
+bool winshow = 0;
+
+/*******************************************************
+WIN32 command line parser function
+********************************************************/
+int ParseCommandline( )
+{
+	int    nArgs, i;
+	WCHAR  *wcCommandLine;
+	LPWSTR *szArglist;
+	int boygroup_id;
+
+	// Get a WCHAR version of the parsed commande line
+	wcCommandLine = GetCommandLineW();	
+	szArglist = CommandLineToArgvW( wcCommandLine, &nArgs);
+	if( NULL == szArglist ) {
+		cout << "argumetns: -b,--boygroup [boygroup id]" <<endl;
+		cout << "           -s,--show " << endl;
+		return 0;
+	} else {
+		for( i=0; i<nArgs; i++) { 
+			LPWSTR arg = szArglist[i];
+			if( !wcscmp(arg, L"--show") || !wcscmp(arg,L"-s") ) {
+					winshow = 1; 
+			}
+			if( !wcscmp(arg,L"--boygroup") || !wcscmp(arg, L"-b") ) {	
+				arg = szArglist[++i];
+				int arglen = wcslen( arg );
+				
+				if( wcslen( arg ) != 1 ) 
+					return 0;	
+
+				if(!wcscmp(arg,L"A")) boygroup_id = 0;
+				if(!wcscmp(arg,L"B")) boygroup_id = 1;
+				if(!wcscmp(arg,L"C")) boygroup_id = 2;
+				if(!wcscmp(arg,L"D")) boygroup_id = 3;
+				if(!wcscmp(arg,L"E")) boygroup_id = 0;
+			}
+		}
+	}
+	LocalFree(szArglist);
+	// return the number of argument
+	return boygroup_id;
+}
+
 // for default console
 //========================================================================
 // int main() {
@@ -58,25 +107,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _In_ int       nCmdShow  
 )*/
 //int main() 
-{
-	if (!NDIlib_initialize()) return 0;
+{	
+	int i, boygroup_id;
 	
+	if (!NDIlib_initialize()) return 0;
 	ofAppNoWindow window;
 	//ofSetupOpenGL( &window, 512, 512, OF_WINDOW );
 	
 
 	ofSetupOpenGL(512, 512, OF_WINDOW); // <-------- setup the GL context
 	
-	ofSetWindowPosition(-512,0);
-	ShowWindow( ofGetWin32Window(), SW_HIDE );
+	boygroup_id = ParseCommandline();
+	
+	if( !winshow ) {
+		ofSetWindowPosition(-512,0);
+		ShowWindow( ofGetWin32Window(), SW_HIDE );
+	}
+
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
 	// pass in width and height too:
 	ofApp *app = new ofApp();
+
+
+	// Parse command line
+
 	app->n_source = 0;
-	if( strlen( lpCmdLine ) > 0 ) {
-		app->n_source = (int)lpCmdLine[0] - 65;
-	}
+	app->n_source = boygroup_id;
 	ofRunApp( app );
 
 	return 0;

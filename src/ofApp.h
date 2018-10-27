@@ -26,7 +26,7 @@
 
 #include "ofMain.h"
 #include "resource.h" // for custom icon
-#include "Spout.h" // Spout SDK
+#include <Spout.h> // Spout SDK
 #include <Processing.NDI.Lib.h> // NDI sdk
 
 class ofApp : public ofBaseApp {

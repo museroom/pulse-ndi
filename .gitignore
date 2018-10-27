@@ -3,5 +3,9 @@ Release/
 bin/
 *opensdf
 ipch/
-*sdf
-*suo
+*.sdf
+*.suo
+Win32/
+obj/
+bin/
+.idea/

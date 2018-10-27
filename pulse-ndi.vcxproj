@@ -59,15 +59,15 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>W:\Projects\ndisdk35\Include;W:\openFrameworks\apps\spout1;W:\Projects\ndisdk35\Include;W:\openFrameworks\apps\SpoutSDK;%(AdditionalIncludeDirectories);src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>W:\Projects\Spout2\SpoutSDK\Source;W:\Projects\ndisdk35\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>W:\Projects\ndisdk35\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Spout.lib;Processing.NDI.Lib.x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>W:\Projects\ndisdk35\Lib\x86;W:\openFrameworks\apps\spout1\ofSpoutExample\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,32 +92,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\SpoutCopy.cpp" />
-    <ClCompile Include="..\SpoutDirectX.cpp" />
-    <ClCompile Include="..\SpoutGLDXinterop.cpp" />
-    <ClCompile Include="..\SpoutGLextensions.cpp" />
-    <ClCompile Include="..\SpoutMemoryShare.cpp" />
-    <ClCompile Include="..\SpoutReceiver.cpp" />
-    <ClCompile Include="..\SpoutSDK.cpp" />
-    <ClCompile Include="..\SpoutSender.cpp" />
-    <ClCompile Include="..\SpoutSenderNames.cpp" />
-    <ClCompile Include="..\SpoutSharedMemory.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Spout.h" />
-    <ClInclude Include="..\SpoutCommon.h" />
-    <ClInclude Include="..\SpoutCopy.h" />
-    <ClInclude Include="..\SpoutDirectX.h" />
-    <ClInclude Include="..\SpoutGLDXinterop.h" />
-    <ClInclude Include="..\SpoutGLextensions.h" />
-    <ClInclude Include="..\SpoutMemoryShare.h" />
-    <ClInclude Include="..\SpoutReceiver.h" />
-    <ClInclude Include="..\SpoutSDK.h" />
-    <ClInclude Include="..\SpoutSender.h" />
-    <ClInclude Include="..\SpoutSenderNames.h" />
-    <ClInclude Include="..\SpoutSharedMemory.h" />
     <ClInclude Include="src\ofApp.h" />
   </ItemGroup>
   <ItemGroup>
