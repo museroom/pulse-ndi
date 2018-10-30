@@ -38,9 +38,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>C:\pulse\pulse-ndi</OutDir>
+    <OutDir>C:\pulse\pulse-ndi\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <TargetName>ofSpout_debug</TargetName>
+    <TargetName>ofSpout_ndi37_debug</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
@@ -67,7 +67,7 @@
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <AdditionalDependencies>Spout.lib;Processing.NDI.Lib.x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>W:\Projects\ndisdk35\Lib\x86;W:\openFrameworks\apps\spout1\ofSpoutExample\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>W:\Projects\ndisdk35\Lib\x86;W:\openFrameworks\apps\spout1\pulse-ndi\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
